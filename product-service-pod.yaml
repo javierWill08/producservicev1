@@ -1,0 +1,32 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: product-service-pod
+  labels:
+    app: product-service
+spec:
+  containers:
+  - name: product-service-container
+    image: localhost.local:5000/product-service # Cambia esto por el nombre de tu imagen de Docker
+    ports:
+    - containerPort: 3000
+    env:
+    - name: DB_NAME
+      value: "postgres"
+    - name: DB_USER
+      value: "postgres"
+    - name: DB_PASSWORD
+      value: "postgres"
+    - name: DB_HOST
+      value: "192.168.10.17"
+    - name: DB_PORT
+      value: "5432"
+    - name: PORT
+      value: "3000"
+    resources:
+      requests:
+        memory: "64Mi"
+        cpu: "250m"
+      limits:
+        memory: "128Mi"
+        cpu: "500m"
