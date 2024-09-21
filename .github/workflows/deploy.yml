@@ -30,7 +30,13 @@ jobs:
           BUILD_NUMBER=${{ github.run_number }}
           IMAGE_TAG="${BUILD_DATE}-${BUILD_NUMBER}"
           echo "IMAGE_TAG=${IMAGE_TAG}" >> $GITHUB_ENV
-          echo "::set-output name=image_tag::$IMAGE_TAG"  # Configurar el valor como salida
+          echo "${IMAGE_TAG}" > image_tag.txt
+      
+      - uses: actions/upload-artifact@v3
+        name: Upload IMAGE_TAG artifact
+        with:
+          name: image_tag
+          path: image_tag.txt
 
       
       - uses: docker/build-push-action@v6
@@ -48,11 +54,20 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v2
 
+      - uses: actions/download-artifact@v3
+        name: Download IMAGE_TAG artifact
+        with:
+          name: image_tag
+
+      - name: Read IMAGE_TAG from file
+        run: |
+          IMAGE_TAG=$(cat image_tag.txt)
+          echo "IMAGE_TAG=${IMAGE_TAG}"
       
       - name: Update Image Tag Values
         run: |
           chart_dir="deploy"
-          new_image_tag="${{ needs.build.outputs.image_tag }}"
+          new_image_tag=$(cat image_tag.txt)
           # Verificar si el tag no está vacío
           if [ -z "$new_image_tag" ]; then
           echo "Error: El tag de la imagen está vacío."
