@@ -30,6 +30,8 @@ jobs:
           BUILD_NUMBER=${{ github.run_number }}
           IMAGE_TAG="${BUILD_DATE}-${BUILD_NUMBER}"
           echo "IMAGE_TAG=${IMAGE_TAG}" >> $GITHUB_ENV
+          echo "::set-output name=image_tag::$IMAGE_TAG"  # Configurar el valor como salida
+
       
       - uses: docker/build-push-action@v6
         name: buil and push 
@@ -37,10 +39,6 @@ jobs:
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/product-service:${{ env.IMAGE_TAG }}, ${{ secrets.DOCKERHUB_USERNAME }}/product-service:latest
      
-      - name: Set IMAGE_TAG as output
-        id: image_tag_output
-        run: echo "::set-output name=image_tag::${{ env.IMAGE_TAG }}"
-
   update:
     name: Update Helm Manifests
     runs-on: ubuntu-latest
