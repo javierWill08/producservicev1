@@ -28,13 +28,18 @@ jobs:
         run: |
           BUILD_DATE=$(date +'%Y%m%d')
           BUILD_NUMBER=${{ github.run_number }}
-          echo "IMAGE_TAG=${BUILD_DATE}-${BUILD_NUMBER}" >> $GITHUB_ENV
+          IMAGE_TAG="${BUILD_DATE}-${BUILD_NUMBER}"
+          echo "IMAGE_TAG=${IMAGE_TAG}" >> $GITHUB_ENV
       
       - uses: docker/build-push-action@v6
         name: buil and push 
         with:
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/product-service:${{ env.IMAGE_TAG }}, ${{ secrets.DOCKERHUB_USERNAME }}/product-service:latest
+     
+      - name: Set IMAGE_TAG as output
+        id: image_tag_output
+        run: echo "::set-output name=image_tag::${{ env.IMAGE_TAG }}"
 
   update:
     name: Update Helm Manifests
@@ -49,7 +54,7 @@ jobs:
       - name: Update Image Tag Values
         run: |
           chart_dir="deploy"
-          new_image_tag="${{ env.IMAGE_TAG }}"
+          new_image_tag="${{ needs.build.outputs.image_tag }}"
           # Verificar si el tag no está vacío
           if [ -z "$new_image_tag" ]; then
           echo "Error: El tag de la imagen está vacío."
