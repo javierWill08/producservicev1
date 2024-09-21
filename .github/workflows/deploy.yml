@@ -32,4 +32,4 @@ jobs:
         name: buil and push 
         with:
           push: true
-          tags: rinkiyakedad/go-server:${{ env.BUILD_DATE }}-${{ env.BUILD_NUMBER }}, rinkiyakedad/go-server:latest
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/product-service:${{ env.BUILD_DATE }}-${{ env.BUILD_NUMBER }}, ${{ secrets.DOCKERHUB_USERNAME }}/product-service:latest
