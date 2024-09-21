@@ -25,11 +25,37 @@ jobs:
         name: Set up Docker Buildx
 
       - name: Get date and build number
-        run: echo "BUILD_DATE=$(date +'%Y%m%d')" >> $GITHUB_ENV
-      - run: echo "BUILD_NUMBER=${{ github.run_number }}" >> $GITHUB_ENV
+        run: |
+          BUILD_DATE=$(date +'%Y%m%d')
+          BUILD_NUMBER=${{ github.run_number }}
+          echo "IMAGE_TAG=${BUILD_DATE}-${BUILD_NUMBER}" >> $GITHUB_ENV
       
       - uses: docker/build-push-action@v6
         name: buil and push 
         with:
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/product-service:${{ env.BUILD_DATE }}-${{ env.BUILD_NUMBER }}, ${{ secrets.DOCKERHUB_USERNAME }}/product-service:latest
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/product-service:${{ env.IMAGE_TAG }}, ${{ secrets.DOCKERHUB_USERNAME }}/product-service:latest
+
+  update:
+    name: Update Helm Manifests
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      - name: Update Image Tag Values
+        run: |
+          chart_dir="deploy"
+          new_image_tag=${{ env.IMAGE_TAG }}
+
+          # Update the values.yaml file with the new image tag
+          sed -i "s/^  tag: .*/  tag: $new_image_tag/" "$chart_dir/values.yaml"
+    
+      - name: Commit the changes made
+        run: | 
+         git config --global user.name 'javierWill08'
+         git config --global user.email 'javier_12-9will@hotmail.com'
+         git commit -am "updating image tag"
+         git push

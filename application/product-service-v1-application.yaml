@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata: 
+  name: producservice-v1
+  namespace: argocd
+spec: 
+  destination: 
+    namespace: litethinking
+    server: "https://kubernetes.default.svc"
+  project: default
+  source: 
+    path: "deploy"
+    repoURL: "https://github.com/javierWill08/producservicev1.git"
+    targetRevision: trunk
+    helm:
+      valueFiles:
+        - values.yaml
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
