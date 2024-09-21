@@ -45,15 +45,26 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v2
 
+      - name: Mostrar contenido del values.yaml antes de modificarlo
+        run: cat "$chart_dir/values.yaml"
 
       - name: Update Image Tag Values
         run: |
           chart_dir="deploy"
           new_image_tag="${{ env.IMAGE_TAG }}"
-
+          # Verificar si el tag no está vacío
+          if [ -z "$new_image_tag" ]; then
+          echo "Error: El tag de la imagen está vacío."
+          exit 1
+          fi
           # Update the values.yaml file with the new image tag
           sed -i "s/^  tag: .*/  tag: $new_image_tag/" "$chart_dir/values.yaml"
-    
+
+
+      - name: Mostrar contenido del values.yaml despues de modificarlo
+        run: cat "$chart_dir/values.yaml"  
+        
+        
       - name: Commit the changes made
         run: | 
          git config --global user.name 'javier '
