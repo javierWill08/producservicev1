@@ -45,9 +45,7 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v2
 
-      - name: Mostrar contenido del values.yaml antes de modificarlo
-        run: cat "$chart_dir/values.yaml"
-
+      
       - name: Update Image Tag Values
         run: |
           chart_dir="deploy"
