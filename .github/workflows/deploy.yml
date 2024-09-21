@@ -45,10 +45,11 @@ jobs:
       - name: Check out code
         uses: actions/checkout@v2
 
+
       - name: Update Image Tag Values
         run: |
           chart_dir="deploy"
-          new_image_tag=${{ env.IMAGE_TAG }}
+          new_image_tag="${{ env.IMAGE_TAG }}"
 
           # Update the values.yaml file with the new image tag
           sed -i "s/^  tag: .*/  tag: $new_image_tag/" "$chart_dir/values.yaml"
