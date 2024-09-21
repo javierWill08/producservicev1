@@ -78,7 +78,7 @@ jobs:
 
 
       - name: Mostrar contenido del values.yaml despues de modificarlo
-        run: cat "$chart_dir/values.yaml"  
+        run: cat "./$chart_dir/values.yaml"  
         
         
       - name: Commit the changes made
