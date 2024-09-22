@@ -76,10 +76,7 @@ jobs:
           # Update the values.yaml file with the new image tag
           sed -i "s/^  tag: .*/  tag: $new_image_tag/" "$chart_dir/values.yaml"
 
-
-      - name: Mostrar contenido del values.yaml despues de modificarlo
-        run: cat "./$chart_dir/values.yaml"  
-        
+    
         
       - name: Commit the changes made
         run: | 
