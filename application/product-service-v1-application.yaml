@@ -9,7 +9,7 @@ spec:
     server: "https://kubernetes.default.svc"
   project: default
   source: 
-    path: "deploy"
+    path: "deploy/templates"
     repoURL: "https://github.com/javierWill08/producservicev1.git"
     targetRevision: trunk
     helm:
